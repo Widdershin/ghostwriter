@@ -1,0 +1,31 @@
+{
+  "name": "ghostwriter",
+  "version": "0.0.1",
+  "description": "An autocompleting editor for writing raps and rhymes",
+  "main": "index.js",
+  "scripts": {
+    "test": "npm test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Widdershin/ghostwriter.git"
+  },
+  "author": "Nick Johnstone",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Widdershin/ghostwriter/issues"
+  },
+  "homepage": "https://github.com/Widdershin/ghostwriter",
+  "dependencies": {
+    "@cycle/core": "^3.1.0",
+    "@cycle/dom": "^5.3.0",
+    "babel": "^5.8.23",
+    "babelify": "^6.3.0",
+    "cycle-time-travel": "^0.1.2",
+    "express": "^4.13.3",
+    "rhyme": "0.0.3"
+  },
+  "devDependencies": {
+    "beefy": "^2.1.5"
+  }
+}
