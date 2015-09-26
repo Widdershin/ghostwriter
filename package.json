@@ -26,6 +26,8 @@
     "rhyme": "0.0.3"
   },
   "devDependencies": {
-    "beefy": "^2.1.5"
+    "beefy": "^2.1.5",
+    "browserify": "^11.2.0",
+    "watchify": "^3.4.0"
   }
 }

@@ -21,24 +21,25 @@ function updateText (text) {
 
 function main ({DOM}) {
   const keyPress$ = Rx.Observable
-    .fromEvent(document.body, 'keypress')
-    .map(ev => ev.key);
+    .fromEvent(document.body, 'keypress');
 
   const tabPress$ = keyPress$.filter(keyPressed('Tab'));
+
+  tabPress$.forEach(ev => ev.preventDefault());
 
   const textUpdate$ = DOM.select('.text').events('input')
     .map(event => event.target.value)
     .startWith('');
 
   const editorText$ = Rx.Observable.merge(
-    tabPress$.map(log('tab')).map(ev => addRhyme),
+    tabPress$.map(ev => addRhyme),
     textUpdate$.map(text => updateText(text))
   ).scan((text, modifier) => modifier(text), '');
 
   const timeTravel = CycleTimeTravel(DOM, [
     {stream: editorText$, label: 'editorText$'},
-    {stream: keyPress$, label: 'keyPress$'},
-    {stream: tabPress$, label: 'tabPress$'}
+    {stream: keyPress$.map(ev => ev.key), label: 'keyPress$'},
+    {stream: tabPress$.map(_ => 'Tab'), label: 'tabPress$'}
   ]);
 
   return {
