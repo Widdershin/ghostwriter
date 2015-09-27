@@ -16,7 +16,17 @@ function keyPressed (key) {
 }
 
 function addRhyme (wordToRhyme, rhyme) {
-  return text => text + _.sample(rhyme.rhyme(wordToRhyme)).toLowerCase();
+  return text => {
+    let availableRhymes = rhyme.rhyme(wordToRhyme);
+
+    if (availableRhymes === undefined) {
+      availableRhymes = [];
+    }
+
+    const madeRhyme = _.sample(availableRhymes) || '';
+
+    return text + madeRhyme.toLowerCase();
+  }
 }
 
 function updateText (text) {
@@ -49,7 +59,7 @@ function main ({DOM}) {
         return _.last(lines);
       })
       .last().value()
-  ).debounce(300);
+  );
 
   const rhyme$ = Rx.Observable.fromCallback(rhyme)();
 
