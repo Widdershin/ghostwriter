@@ -1,0 +1,57 @@
+html, body {
+  margin: 0px 0px;
+
+  background: black;
+
+  font-family: 'Helvetica';
+  letter-spacing: 7px;
+  text-transform: uppercase;
+  color: yellow;
+}
+
+.app-inner {
+  width: 500px;
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+h1 {
+  text-align: center;
+  font-size: 2.5em;
+}
+
+.text {
+  margin: 30px auto;
+  font-size: 1.3em;
+  background: black;
+
+  color: yellow;
+  width: 100%;
+
+  border: 2px solid yellow;
+  padding: 7px;
+}
+
+.rhyme {
+  outline: none;
+  align-self: center;
+
+  background: black;
+  border: 2px solid yellow;
+  font-size: 1.5em;
+  color: yellow;
+
+  padding: 12px;
+  padding-left: 16px;
+}
+
+.rhyme:hover {
+  background: yellow;
+  color: black;
+}
+
+.rhyme:active {
+  background: black;
+  color: yellow;
+}

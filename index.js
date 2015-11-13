@@ -70,18 +70,17 @@ function main ({DOM}) {
     textUpdate$.map(text => updateText(text))
   ).scan((text, modifier) => modifier(text), '');
 
-  const timeTravel = CycleTimeTravel(DOM, [
-  ]);
-
   return {
     DOM: Rx.Observable.combineLatest(
       editorText$,
-      timeTravel.DOM,
-      (text, timeTravelBar) => (
-        h('.app-inner', [
-          h('textarea.text', {rows: 20, cols: 50, value: text}),
-          h('button.rhyme', 'Rhyme'),
-          timeTravelBar
+      wordToRhyme$,
+      (text, timeTravelBar, wordToRhyme) => (
+        h('.container', [
+          h('h1', 'Ghostwriter'),
+          h('.app-inner', [
+            h('button.rhyme', 'RHYME'),
+            h('textarea.text', {rows: 18, value: text})
+          ])
         ])
       ))
   };
