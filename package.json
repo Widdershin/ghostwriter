@@ -4,7 +4,8 @@
   "description": "An autocompleting editor for writing raps and rhymes",
   "main": "index.js",
   "scripts": {
-    "test": "npm test"
+    "test": "npm test",
+    "bundle": "browserify index.js -o bundle.js -t babelify -g brfs"
   },
   "repository": {
     "type": "git",
