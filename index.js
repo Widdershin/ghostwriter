@@ -11,8 +11,10 @@ function log (label) {
   return console.log.bind(console, label);
 }
 
-function keyPressed (key) {
-  return ev => ev.key === key || ev.keyIdentifier === key;
+function keyPressed (key, number) {
+  return ev => {
+    return ev.key === key || ev.keyIdentifier === key || ev.keyCode === number;
+  };
 }
 
 function addRhyme (wordToRhyme, rhyme) {
@@ -38,11 +40,12 @@ function main ({DOM}) {
     .map(event => event.target.value)
     .startWith('');
 
-  const keyPress$ = Rx.Observable
-    .fromEvent(document.body, 'keypress');
+  const keyPress$ = DOM.select('.container').events('keydown');
 
-  const tabPress$ = Rx.Observable.merge(
-    keyPress$.filter(keyPressed('Tab')),
+  const tabPress$ = keyPress$.filter(keyPressed('Tab', 9));
+
+  const rhymePress$ = Rx.Observable.merge(
+    tabPress$,
     DOM.select('.rhyme').events('click')
   );
 
@@ -63,10 +66,10 @@ function main ({DOM}) {
 
   const rhyme$ = Rx.Observable.fromCallback(rhyme)();
 
-  tabPress$.forEach(ev => ev.preventDefault());
+  rhymePress$.forEach(ev => ev.preventDefault());
 
   const editorText$ = Rx.Observable.merge(
-    tabPress$.withLatestFrom(wordToRhyme$, rhyme$, (ev, wordToRhyme, rhyme) => addRhyme(wordToRhyme, rhyme)),
+    rhymePress$.withLatestFrom(wordToRhyme$, rhyme$, (ev, wordToRhyme, rhyme) => addRhyme(wordToRhyme, rhyme)),
     textUpdate$.map(text => updateText(text))
   ).scan((text, modifier) => modifier(text), '');
 
