@@ -68,10 +68,12 @@ function main ({DOM}) {
 
   rhymePress$.forEach(ev => ev.preventDefault());
 
-  const editorText$ = Rx.Observable.merge(
+  const action$ = Rx.Observable.merge(
     rhymePress$.withLatestFrom(wordToRhyme$, rhyme$, (ev, wordToRhyme, rhyme) => addRhyme(wordToRhyme, rhyme)),
     textUpdate$.map(text => updateText(text))
-  ).scan((text, modifier) => modifier(text), '');
+  );
+
+  const editorText$ = action$.scan((text, action) => action(text), '');
 
   return {
     DOM: Rx.Observable.combineLatest(
