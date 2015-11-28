@@ -28,7 +28,7 @@ function addRhyme (wordToRhyme, rhyme) {
     const madeRhyme = _.sample(availableRhymes) || '';
 
     return text + madeRhyme.toLowerCase();
-  }
+  };
 }
 
 function updateText (text) {

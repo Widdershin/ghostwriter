@@ -4,6 +4,7 @@
   "description": "An autocompleting editor for writing raps and rhymes",
   "main": "index.js",
   "scripts": {
+    "start": "budo index.js:bundle.js --live='*.css' -- -t babelify -g brfs | garnish",
     "test": "npm test"
   },
   "repository": {
@@ -30,7 +31,6 @@
     "rhyme": "widdershin/node-rhyme"
   },
   "devDependencies": {
-    "beefy": "^2.1.5",
     "browserify": "^11.2.0",
     "watchify": "^3.4.0"
   }
