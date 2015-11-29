@@ -23,14 +23,14 @@ function addRhyme (rhymingDictionary) {
     const availableRhymes = rhymingDictionary.rhyme(wordToRhyme);
 
     if (_.isEmpty(availableRhymes)) {
-      return Object.assign({}, state, {notification: "No Rhymes"});
+      return Object.assign({}, state, {notification: 'No Rhymes'});
     }
 
     const madeRhyme = _.sample(availableRhymes);
 
     const stateUpdates = {
       text: state.text + madeRhyme.toLowerCase(),
-      notification: ""
+      notification: ''
     };
 
     return Object.assign({}, state, stateUpdates);
@@ -49,11 +49,11 @@ function lastWord (text) {
 
       return _.last(lines);
     })
-    .last().value()
+    .last().value();
 }
 
 function updateText (textEnteredByUser) {
-  return state => Object.assign({}, state, {text: textEnteredByUser, notification: ""});
+  return state => Object.assign({}, state, {text: textEnteredByUser, notification: ''});
 }
 
 function main ({DOM}) {
@@ -81,13 +81,13 @@ function main ({DOM}) {
   const initialState = {
     text: '',
     notification: ''
-  }
+  };
 
   const state$ = action$.scan((state, action) => action(state), initialState)
     .startWith(initialState)
-    .do(function(state){
-      console.log("state", JSON.stringify(state))
-    })
+    .do(function (state) {
+      console.log('state', JSON.stringify(state))
+    });
 
   return {
     DOM: state$.map(({text, notification}) => (
