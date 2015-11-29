@@ -19,18 +19,20 @@ function keyPressed (key, number) {
 
 function addRhyme (wordToRhyme, rhymingDictionary) {
   return state => {
-    let availableRhymes = rhymingDictionary.rhyme(wordToRhyme);
-    state.notification = ""
+    const availableRhymes = rhymingDictionary.rhyme(wordToRhyme);
 
     if (_.isEmpty(availableRhymes)) {
-      state.notification = "No Rhymes"
+      return {
+        text: state.text,
+        notification: "No Rhymes"
+      }
     }
 
-    const madeRhyme = _.sample(availableRhymes) || '';
+    const madeRhyme = _.sample(availableRhymes);
 
     return {
       text: state.text + madeRhyme.toLowerCase(),
-      notification: state.notification
+      notification: ""
     };
   };
 }
@@ -89,15 +91,15 @@ function main ({DOM}) {
 
   return {
     DOM: state$.map(({text, notification}) => (
-        h('.container', [
-          h('h1', 'Ghostwriter'),
-          h('.app-inner', [
-            h('button.rhyme', 'RHYME'),
-            h('textarea.text', {rows: 18, value: text}),
-            h('.notification', notification)
-          ])
+      h('.container', [
+        h('h1', 'Ghostwriter'),
+        h('.app-inner', [
+          h('button.rhyme', 'RHYME'),
+          h('textarea.text', {rows: 18, value: text}),
+          h('.notification', notification)
         ])
-      ))
+      ])
+    ))
   };
 }
 
