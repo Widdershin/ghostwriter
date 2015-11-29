@@ -36,7 +36,7 @@ function addRhyme (wordToRhyme, rhymingDictionary) {
 }
 
 function updateText (textEnteredByUser) {
-  return state => ({text: textEnteredByUser, notification: state.notification});
+  return state => ({text: textEnteredByUser, notification: ""});
 }
 
 function main ({DOM}) {
