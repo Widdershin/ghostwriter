@@ -17,28 +17,31 @@ function keyPressed (key, number) {
   };
 }
 
-function addRhyme (wordToRhyme, rhyme) {
-  return text => {
-    let availableRhymes = rhyme.rhyme(wordToRhyme);
+function addRhyme (wordToRhyme, rhymingDictionary) {
+  return state => {
+    let availableRhymes = rhymingDictionary.rhyme(wordToRhyme);
+    state.notification = ""
 
-    if (availableRhymes === undefined) {
-      availableRhymes = [];
+    if (_.isEmpty(availableRhymes)) {
+      state.notification = "No Rhymes"
     }
 
     const madeRhyme = _.sample(availableRhymes) || '';
 
-    return text + madeRhyme.toLowerCase();
+    return {
+      text: state.text + madeRhyme.toLowerCase(),
+      notification: state.notification
+    };
   };
 }
 
-function updateText (text) {
-  return oldText => text;
+function updateText (textEnteredByUser) {
+  return state => ({text: textEnteredByUser, notification: state.notification});
 }
 
 function main ({DOM}) {
   const textUpdate$ = DOM.select('.text').events('input')
-    .map(event => event.target.value)
-    .startWith('');
+    .map(event => event.target.value);
 
   const keyPress$ = DOM.select('.container').events('keydown');
 
@@ -64,27 +67,34 @@ function main ({DOM}) {
       .last().value()
   );
 
-  const rhyme$ = Rx.Observable.fromCallback(rhyme)();
+  const rhymingDictionary$ = Rx.Observable.fromCallback(rhyme)();
 
   rhymePress$.forEach(ev => ev.preventDefault());
 
   const action$ = Rx.Observable.merge(
-    rhymePress$.withLatestFrom(wordToRhyme$, rhyme$, (ev, wordToRhyme, rhyme) => addRhyme(wordToRhyme, rhyme)),
+    rhymePress$.withLatestFrom(wordToRhyme$, rhymingDictionary$, (ev, wordToRhyme, rhymingDictionary) => addRhyme(wordToRhyme, rhymingDictionary)),
     textUpdate$.map(text => updateText(text))
   );
 
-  const editorText$ = action$.scan((text, action) => action(text), '');
+  const initialState = {
+    text: '',
+    notification: ''
+  }
+
+  const state$ = action$.scan((state, action) => action(state), initialState)
+    .startWith(initialState)
+    .do(function(state){
+      console.log("state", JSON.stringify(state))
+    })
 
   return {
-    DOM: Rx.Observable.combineLatest(
-      editorText$,
-      wordToRhyme$,
-      (text, timeTravelBar, wordToRhyme) => (
+    DOM: state$.map(({text, notification}) => (
         h('.container', [
           h('h1', 'Ghostwriter'),
           h('.app-inner', [
             h('button.rhyme', 'RHYME'),
-            h('textarea.text', {rows: 18, value: text})
+            h('textarea.text', {rows: 18, value: text}),
+            h('.notification', notification)
           ])
         ])
       ))
