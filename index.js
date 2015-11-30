@@ -21,18 +21,27 @@ function addRhyme (rhymingDictionary) {
   return state => {
     const wordToRhyme = lastWord(state.text);
     const availableRhymes = rhymingDictionary.rhyme(wordToRhyme);
+    const madeRhyme = _.shuffle(availableRhymes).slice(0, 1)[0];
+    let text;
+
+    if (wordToRhyme === state.lastWord) {
+      const textArray = state.text.split(' ');
+      textArray.splice(textArray.length - 1, textArray.length);
+      text = textArray.join(' ') + ' ' + madeRhyme.toLowerCase();
+    } else {
+      text = state.text + madeRhyme.toLowerCase();
+    }
 
     if (_.isEmpty(availableRhymes)) {
       return Object.assign({}, state, {notification: 'No Rhymes'});
     }
 
-    const madeRhyme = _.sample(availableRhymes);
-
     const stateUpdates = {
-      text: state.text + madeRhyme.toLowerCase(),
-      notification: ''
+      text: text,
+      notification: '',
+      availableRhymes,
+      lastWord: wordToRhyme
     };
-
     return Object.assign({}, state, stateUpdates);
   };
 }
@@ -90,7 +99,7 @@ function main ({DOM}) {
     });
 
   return {
-    DOM: state$.map(({text, notification}) => (
+    DOM: state$.map(({text, notification, availableRhymes}) => (
       h('.container', [
         h('h1', 'Ghostwriter'),
         h('.app-inner', [
