@@ -99,7 +99,7 @@ function main ({DOM}) {
     });
 
   return {
-    DOM: state$.map(({text, notification, availableRhymes}) => (
+    DOM: state$.map(({text, notification}) => (
       h('.container', [
         h('h1', 'Ghostwriter'),
         h('.app-inner', [
