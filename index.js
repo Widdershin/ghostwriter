@@ -39,7 +39,6 @@ function addRhyme (rhymingDictionary) {
     const stateUpdates = {
       text: text,
       notification: '',
-      availableRhymes,
       lastWord: wordToRhyme
     };
     return Object.assign({}, state, stateUpdates);
