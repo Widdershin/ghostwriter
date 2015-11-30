@@ -9,4 +9,5 @@ Setup
 ```bash
 npm install
 node_modules/rhyme/data/fetch.sh # download rhyming dictionary
+npm start
 ```

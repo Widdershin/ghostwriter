@@ -21,18 +21,28 @@ function addRhyme (rhymingDictionary) {
   return state => {
     const wordToRhyme = lastWord(state.text);
     const availableRhymes = rhymingDictionary.rhyme(wordToRhyme);
+    const madeRhyme = _.shuffle(availableRhymes).slice(0, 1)[0];
 
     if (_.isEmpty(availableRhymes)) {
       return Object.assign({}, state, {notification: 'No Rhymes'});
     }
 
-    const madeRhyme = _.sample(availableRhymes);
+    // TODO - refactor to avoid mutability
+    let text;
+
+    if (wordToRhyme === state.lastWord) {
+      const textArray = state.text.split(' ');
+      textArray.splice(textArray.length - 1, textArray.length);
+      text = textArray.join(' ') + ' ' + madeRhyme.toLowerCase();
+    } else {
+      text = state.text + madeRhyme.toLowerCase();
+    }
 
     const stateUpdates = {
-      text: state.text + madeRhyme.toLowerCase(),
-      notification: ''
+      text: text,
+      notification: '',
+      lastWord: wordToRhyme
     };
-
     return Object.assign({}, state, stateUpdates);
   };
 }
