@@ -22,6 +22,12 @@ function addRhyme (rhymingDictionary) {
     const wordToRhyme = lastWord(state.text);
     const availableRhymes = rhymingDictionary.rhyme(wordToRhyme);
     const madeRhyme = _.shuffle(availableRhymes).slice(0, 1)[0];
+
+    if (_.isEmpty(availableRhymes)) {
+      return Object.assign({}, state, {notification: 'No Rhymes'});
+    }
+
+    // TODO - refactor to avoid mutability
     let text;
 
     if (wordToRhyme === state.lastWord) {
@@ -30,10 +36,6 @@ function addRhyme (rhymingDictionary) {
       text = textArray.join(' ') + ' ' + madeRhyme.toLowerCase();
     } else {
       text = state.text + madeRhyme.toLowerCase();
-    }
-
-    if (_.isEmpty(availableRhymes)) {
-      return Object.assign({}, state, {notification: 'No Rhymes'});
     }
 
     const stateUpdates = {
