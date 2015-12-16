@@ -21,6 +21,13 @@ h1 {
   font-size: 2.5em;
 }
 
+.instructions {
+  font-size: smaller;
+  width: 50%;
+  margin: 0 auto;
+  line-height: 1.5em;
+}
+
 .text {
   margin: 30px auto;
   font-size: 1.3em;

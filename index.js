@@ -102,7 +102,6 @@ function main ({DOM}) {
   return {
     DOM: state$.map(({text, notification}) => (
       h('.container', [
-        h('h1', 'Ghostwriter'),
         h('.app-inner', [
           h('button.rhyme', 'RHYME'),
           h('textarea.text', {rows: 18, value: text}),
