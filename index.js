@@ -104,8 +104,10 @@ function main ({DOM}) {
       h('.container', [
         h('.app-inner', [
           h('button.rhyme', 'RHYME'),
-          h('textarea.text', {rows: 18, value: text}),
-          h('.notification', notification)
+          h('.text', [
+            h('.notification', notification),
+            h('textarea', {rows: 18, value: text})
+          ])
         ])
       ])
     ))
