@@ -1,64 +1,129 @@
 html, body {
-  margin: 0px 0px;
-
-  background: black;
-
-  font-family: 'Helvetica';
-  letter-spacing: 7px;
+  color: #303029;
+  font-family: 'Roboto', sans-serif;
+  letter-spacing: 2px;
+  text-align: center;
   text-transform: uppercase;
-  color: yellow;
+  background: #E1E1E1;
 }
 
-.app-inner {
-  width: 500px;
-  margin: auto;
-  display: flex;
-  flex-direction: column;
+a {
+  color: #00AFB1;
+  text-decoration: none;
+  font-weight: 700;
+  transition: color 0.3s;
+}
+
+a:hover {
+  color: #FFF7A4;
 }
 
 h1 {
+  letter-spacing: 7px;
   text-align: center;
   font-size: 2.5em;
 }
 
 .instructions {
   font-size: smaller;
-  width: 50%;
+  width: 90%;
   margin: 0 auto;
   line-height: 1.5em;
 }
 
+.app-inner {
+  margin: 0 auto;
+  width: 90%;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+}
+
+.notification {
+  position: relative;
+  display: inline-block;
+  font-weight: 700;
+  color: #00AFB1
+}
+
 .text {
-  margin: 30px auto;
-  font-size: 1.3em;
-  background: black;
-
-  color: yellow;
+  margin: auto;
   width: 100%;
+  color: #E1E1E1;
+  background: #1D1D1D;
+}
 
-  border: 2px solid yellow;
-  padding: 7px;
+.text textarea {
+  width: 100%;
+  padding: 0.7em;
+  resize: none;
+  border: none;
+  font-family: 'Roboto', sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  font-size: 1.3em;
+  background: transparent;
+}
+
+.text textarea:focus {
+  outline: none;
 }
 
 .rhyme {
-  outline: none;
-  align-self: center;
-
-  background: black;
-  border: 2px solid yellow;
+  margin: 1em auto;
+  background: #1D1D1D;
+  border: none;
+  width: 6em;
   font-size: 1.5em;
-  color: yellow;
-
-  padding: 12px;
-  padding-left: 16px;
+  color: #FFF7A4;
+  padding: 15px;
+  transition: background 0.5s;
+  transition: color 0.5s;
 }
 
 .rhyme:hover {
-  background: yellow;
-  color: black;
+  border: none;
+  background: #FFF7A4;
+  color: #1D1D1D;
 }
 
 .rhyme:active {
   background: black;
   color: yellow;
+}
+
+/* Tablet Styles */
+@media screen and (min-width: 750px) {
+ .app-inner, .instructions {
+  width: 80%;
+ }
+}
+
+/* Desktop Styles */
+@media screen and (min-width: 1200px) {
+  h1 {
+    font-size: 2.5em;
+  }
+
+  .instructions {
+    width: 50%;
+    margin: 0 auto;
+    line-height: 1.5em;
+  }
+
+  .app-inner {
+    margin: 0 auto;
+    width: 50%;
+  }
+
+  .text {
+    margin: auto;
+    width: 80%;
+    padding: 15px 30px;
+  }
+
+  .rhyme {
+    margin: 1em auto;
+    width: 6em;
+  }
 }
