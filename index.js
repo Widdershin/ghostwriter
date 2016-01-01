@@ -5,6 +5,22 @@ import $ from 'jquery';
 import _ from 'lodash';
 import rhyme from 'rhyme';
 
+const INSTRUCTIONS = `
+Write your sick raps in the text box below.<br />
+Reach the end of the line and don't know where to go? <br /><br />
+
+Hit TAB on your keyboard or RHYME on the screen <br />
+And there you will find the word for your <a href="https://www.wikiwand.com/en/Rhyme_scheme" target="_blank">scheme</a><br /><br />
+
+Don't like it? That's cool, hit it again<br />
+You'll get a new rhyme for your rap and then<br /><br />
+
+Impress all your friends with your linguistic skill<br />
+And do it again, now you know the drill.<br /><br />
+
+Ghostwriter supports an <a href="http://www.wikiwand.com/en/Rhyme_scheme#/Example_rhyme_schemes" target="_blank">AA BB</a> rhyming scheme. Have fun, y'all!
+`;
+
 Rx.config.longStackSupport = true;
 
 function log (label) {
@@ -17,6 +33,20 @@ function keyPressed (key, number) {
   };
 }
 
+function appendNextRhyme (wordToRhyme, state, madeRhyme) {
+  if (wordToRhyme === state.lastWord) {
+    const words = state.text.split(' ');
+
+    const textWithoutRhyme = words
+      .slice(0, words.length - 1)
+      .join(' ');
+
+    return `${textWithoutRhyme} ${madeRhyme.toLowerCase()}`;
+  } else {
+    return `${state.text} ${madeRhyme.toLowerCase()}`;
+  }
+}
+
 function addRhyme (rhymingDictionary) {
   return state => {
     const wordToRhyme = lastWord(state.text);
@@ -27,22 +57,14 @@ function addRhyme (rhymingDictionary) {
       return Object.assign({}, state, {notification: 'No Rhymes'});
     }
 
-    // TODO - refactor to avoid mutability
-    let text;
-
-    if (wordToRhyme === state.lastWord) {
-      const textArray = state.text.split(' ');
-      textArray.splice(textArray.length - 1, textArray.length);
-      text = textArray.join(' ') + ' ' + madeRhyme.toLowerCase();
-    } else {
-      text = state.text + madeRhyme.toLowerCase();
-    }
+    const text = appendNextRhyme(wordToRhyme, state, madeRhyme);
 
     const stateUpdates = {
-      text: text,
+      text,
       notification: '',
       lastWord: wordToRhyme
     };
+
     return Object.assign({}, state, stateUpdates);
   };
 }
@@ -66,7 +88,20 @@ function updateText (textEnteredByUser) {
   return state => Object.assign({}, state, {text: textEnteredByUser, notification: ''});
 }
 
+function toggleInstructionVisibility (state) {
+  return Object.assign(
+    {},
+    state,
+    {instructionsVisible: !state.instructionsVisible}
+  );
+}
+
 function main ({DOM}) {
+  const toggleInstructionVisibility$ = DOM
+    .select('.toggle-instructions')
+    .events('click')
+    .map(_ => toggleInstructionVisibility);
+
   const textUpdate$ = DOM.select('.text').events('input')
     .map(event => event.target.value);
 
@@ -85,23 +120,27 @@ function main ({DOM}) {
 
   const action$ = Rx.Observable.merge(
     rhymePress$.withLatestFrom(rhymingDictionary$, (ev, rhymingDictionary) => addRhyme(rhymingDictionary)),
-    textUpdate$.map(text => updateText(text))
+    textUpdate$.map(text => updateText(text)),
+    toggleInstructionVisibility$
   );
 
   const initialState = {
     text: '',
-    notification: ''
+    notification: '',
+    instructionsVisible: true
   };
 
   const state$ = action$.scan((state, action) => action(state), initialState)
     .startWith(initialState)
     .do(function (state) {
-      console.log('state', JSON.stringify(state))
+      console.log('state', JSON.stringify(state));
     });
 
   return {
-    DOM: state$.map(({text, notification}) => (
+    DOM: state$.map(({text, notification, instructionsVisible}) => (
       h('.container', [
+        h('button.toggle-instructions', `${instructionsVisible ? 'HIDE' : 'SHOW'} INSTRUCTIONS`),
+        h('.instructions', {innerHTML: INSTRUCTIONS, style: {display: instructionsVisible ? 'block' : 'none'}}),
         h('.app-inner', [
           h('button.rhyme', 'RHYME'),
           h('.text', [
