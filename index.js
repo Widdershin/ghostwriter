@@ -33,6 +33,20 @@ function keyPressed (key, number) {
   };
 }
 
+function appendNextRhyme (wordToRhyme, state, madeRhyme) {
+  if (wordToRhyme === state.lastWord) {
+    const words = state.text.split(' ');
+
+    const textWithoutRhyme = words
+      .slice(0, words.length - 1)
+      .join(' ');
+
+    return `${textWithoutRhyme} ${madeRhyme.toLowerCase()}`;
+  } else {
+    return `${state.text} ${madeRhyme.toLowerCase()}`;
+  }
+}
+
 function addRhyme (rhymingDictionary) {
   return state => {
     const wordToRhyme = lastWord(state.text);
@@ -43,22 +57,14 @@ function addRhyme (rhymingDictionary) {
       return Object.assign({}, state, {notification: 'No Rhymes'});
     }
 
-    // TODO - refactor to avoid mutability
-    let text;
-
-    if (wordToRhyme === state.lastWord) {
-      const textArray = state.text.split(' ');
-      textArray.splice(textArray.length - 1, textArray.length);
-      text = textArray.join(' ') + ' ' + madeRhyme.toLowerCase();
-    } else {
-      text = state.text + madeRhyme.toLowerCase();
-    }
+    const text = appendNextRhyme(wordToRhyme, state, madeRhyme);
 
     const stateUpdates = {
-      text: text,
+      text,
       notification: '',
       lastWord: wordToRhyme
     };
+
     return Object.assign({}, state, stateUpdates);
   };
 }
