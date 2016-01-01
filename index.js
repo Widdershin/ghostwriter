@@ -82,7 +82,20 @@ function updateText (textEnteredByUser) {
   return state => Object.assign({}, state, {text: textEnteredByUser, notification: ''});
 }
 
+function toggleInstructionVisibility (state) {
+  return Object.assign(
+    {},
+    state,
+    {instructionsVisible: !state.instructionsVisible}
+  );
+}
+
 function main ({DOM}) {
+  const toggleInstructionVisibility$ = DOM
+    .select('.toggle-instructions')
+    .events('click')
+    .map(_ => toggleInstructionVisibility);
+
   const textUpdate$ = DOM.select('.text').events('input')
     .map(event => event.target.value);
 
@@ -101,24 +114,27 @@ function main ({DOM}) {
 
   const action$ = Rx.Observable.merge(
     rhymePress$.withLatestFrom(rhymingDictionary$, (ev, rhymingDictionary) => addRhyme(rhymingDictionary)),
-    textUpdate$.map(text => updateText(text))
+    textUpdate$.map(text => updateText(text)),
+    toggleInstructionVisibility$
   );
 
   const initialState = {
     text: '',
-    notification: ''
+    notification: '',
+    instructionsVisible: true
   };
 
   const state$ = action$.scan((state, action) => action(state), initialState)
     .startWith(initialState)
     .do(function (state) {
-      console.log('state', JSON.stringify(state))
+      console.log('state', JSON.stringify(state));
     });
 
   return {
-    DOM: state$.map(({text, notification}) => (
+    DOM: state$.map(({text, notification, instructionsVisible}) => (
       h('.container', [
-        h('.instructions', {innerHTML: INSTRUCTIONS}),
+        h('button.toggle-instructions', `${instructionsVisible ? 'HIDE' : 'SHOW'} INSTRUCTIONS`),
+        h('.instructions', {innerHTML: INSTRUCTIONS, style: {display: instructionsVisible ? 'block' : 'none'}}),
         h('.app-inner', [
           h('button.rhyme', 'RHYME'),
           h('.text', [
