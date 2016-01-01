@@ -5,6 +5,22 @@ import $ from 'jquery';
 import _ from 'lodash';
 import rhyme from 'rhyme';
 
+const INSTRUCTIONS = `
+Write your sick raps in the text box below.<br />
+Reach the end of the line and don't know where to go? <br /><br />
+
+Hit TAB on your keyboard or RHYME on the screen <br />
+And there you will find the word for your <a href="https://www.wikiwand.com/en/Rhyme_scheme" target="_blank">scheme</a><br /><br />
+
+Don't like it? That's cool, hit it again<br />
+You'll get a new rhyme for your rap and then<br /><br />
+
+Impress all your friends with your linguistic skill<br />
+And do it again, now you know the drill.<br /><br />
+
+Ghostwriter supports an <a href="http://www.wikiwand.com/en/Rhyme_scheme#/Example_rhyme_schemes" target="_blank">AA BB</a> rhyming scheme. Have fun, y'all!
+`;
+
 Rx.config.longStackSupport = true;
 
 function log (label) {
@@ -102,6 +118,7 @@ function main ({DOM}) {
   return {
     DOM: state$.map(({text, notification}) => (
       h('.container', [
+        h('.instructions', {innerHTML: INSTRUCTIONS}),
         h('.app-inner', [
           h('button.rhyme', 'RHYME'),
           h('.text', [
