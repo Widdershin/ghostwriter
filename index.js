@@ -17,8 +17,6 @@ You'll get a new rhyme for your rap and then<br /><br />
 
 Impress all your friends with your linguistic skill<br />
 And do it again, now you know the drill.<br /><br />
-
-Ghostwriter supports an <a href="http://www.wikiwand.com/en/Rhyme_scheme#/Example_rhyme_schemes" target="_blank">AA BB</a> rhyming scheme. Have fun, y'all!
 `;
 
 Rx.config.longStackSupport = true;
@@ -41,15 +39,15 @@ function appendNextRhyme (wordToRhyme, state, madeRhyme) {
       .slice(0, words.length - 1)
       .join(' ');
 
-    return `${textWithoutRhyme} ${madeRhyme.toLowerCase()}`;
+    return `${textWithoutRhyme.trim()} ${madeRhyme.toLowerCase()}`;
   } else {
-    return `${state.text} ${madeRhyme.toLowerCase()}`;
+    return `${state.text.trim()} ${madeRhyme.toLowerCase()}`;
   }
 }
 
 function addRhyme (rhymingDictionary) {
   return state => {
-    const wordToRhyme = lastWord(state.text);
+    const wordToRhyme = findWordToRhyme(state);
     const availableRhymes = rhymingDictionary.rhyme(wordToRhyme);
     const madeRhyme = _.shuffle(availableRhymes).slice(0, 1)[0];
 
@@ -69,14 +67,27 @@ function addRhyme (rhymingDictionary) {
   };
 }
 
-function lastWord (text) {
+function selectRhymeScheme (rhymeScheme) {
+  return state => Object.assign({}, state, {rhymeScheme});
+}
+
+function findWordToRhyme (state) {
+  const lineToRhymeWith = {
+    'AABB': 1,
+    'ABAB': 2
+  };
+
+  return lastWord(state.text, lineToRhymeWith[state.rhymeScheme]);
+}
+
+function lastWord (text, lineOffset) {
   return _.chain(text.split('\n'))
     .map(_.trim)
     .select(line => line !== '')
     .map(line => line.split(' '))
     .thru(lines => {
-      if (lines.length > 1) {
-        return lines[lines.length - 2];
+      if (lines.length > lineOffset) {
+        return lines[lines.length - 1 - lineOffset];
       }
 
       return _.last(lines);
@@ -114,6 +125,11 @@ function main ({DOM}) {
     DOM.select('.rhyme').events('click')
   );
 
+  const selectRhymeScheme$ = DOM
+    .select('.rhyme-schemes input')
+    .events('change')
+    .map(event => selectRhymeScheme(event.target.value));
+
   const rhymingDictionary$ = Rx.Observable.fromCallback(rhyme)();
 
   rhymePress$.forEach(ev => ev.preventDefault());
@@ -121,13 +137,15 @@ function main ({DOM}) {
   const action$ = Rx.Observable.merge(
     rhymePress$.withLatestFrom(rhymingDictionary$, (ev, rhymingDictionary) => addRhyme(rhymingDictionary)),
     textUpdate$.map(text => updateText(text)),
-    toggleInstructionVisibility$
+    toggleInstructionVisibility$,
+    selectRhymeScheme$
   );
 
   const initialState = {
     text: '',
     notification: '',
-    instructionsVisible: true
+    instructionsVisible: true,
+    rhymeScheme: 'AABB'
   };
 
   const state$ = action$.scan((state, action) => action(state), initialState)
@@ -137,12 +155,19 @@ function main ({DOM}) {
     });
 
   return {
-    DOM: state$.map(({text, notification, instructionsVisible}) => (
+    DOM: state$.map(({text, notification, instructionsVisible, rhymeScheme}) => (
       h('.container', [
         h('button.toggle-instructions', `${instructionsVisible ? 'HIDE' : 'SHOW'} INSTRUCTIONS`),
         h('.instructions', {innerHTML: INSTRUCTIONS, style: {display: instructionsVisible ? 'block' : 'none'}}),
         h('.app-inner', [
           h('button.rhyme', 'RHYME'),
+          h('a', {href: 'https://www.wikiwand.com/en/Rhyme_scheme', target: '_blank'}, 'SELECT A RHYME SCHEME'),
+          h('.rhyme-schemes', [
+            h('input', {type: 'radio', value: 'AABB', name:'rhyme-scheme', checked: true}),
+            h('label', 'AABB'),
+            h('input', {type: 'radio', name:'rhyme-scheme', value: 'ABAB'}),
+            h('label', 'ABAB')
+          ]),
           h('.text', [
             h('.notification', notification),
             h('textarea', {rows: 18, value: text})
