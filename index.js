@@ -157,7 +157,7 @@ function main ({DOM}) {
   return {
     DOM: state$.map(({text, notification, instructionsVisible, rhymeScheme}) => (
       h('.container', [
-        h('button.toggle-instructions', `${instructionsVisible ? 'HIDE' : 'SHOW'} INSTRUCTIONS`),
+        h('a.toggle-instructions', {href: "#"}, `${instructionsVisible ? 'HIDE' : 'SHOW'} INSTRUCTIONS`),
         h('.instructions', {innerHTML: INSTRUCTIONS, style: {display: instructionsVisible ? 'block' : 'none'}}),
         h('.app-inner', [
           h('button.rhyme', 'RHYME'),

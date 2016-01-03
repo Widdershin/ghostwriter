@@ -1,6 +1,7 @@
 html, body {
   color: #303029;
   font-family: 'Roboto', sans-serif;
+  font-size: 0.9em;
   letter-spacing: 2px;
   text-align: center;
   text-transform: uppercase;
@@ -25,7 +26,6 @@ h1 {
 }
 
 .instructions {
-  font-size: smaller;
   width: 90%;
   margin: 0 auto;
   line-height: 1.5em;
@@ -37,6 +37,13 @@ h1 {
   display: flex;
   flex-direction: column;
   flex-wrap: wrap;
+}
+.rhyme-schemes {
+  padding: 10px;
+}
+
+input[type="radio"]{
+  margin: 5px;
 }
 
 .notification {
