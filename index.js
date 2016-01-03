@@ -163,9 +163,9 @@ function main ({DOM}) {
           h('button.rhyme', 'RHYME'),
           h('a', {href: 'https://www.wikiwand.com/en/Rhyme_scheme', target: '_blank'}, 'SELECT A RHYME SCHEME'),
           h('.rhyme-schemes', [
-            h('input', {type: 'radio', value: 'AABB', name:'rhyme-scheme', checked: true}),
+            h('input', {type: 'radio', value: 'AABB', name:'rhyme-scheme', checked: rhymeScheme === 'AABB' ? true : false}),
             h('label', 'AABB'),
-            h('input', {type: 'radio', name:'rhyme-scheme', value: 'ABAB'}),
+            h('input', {type: 'radio', value: 'ABAB', name:'rhyme-scheme', checked: rhymeScheme === 'ABAB' ? true : false}),
             h('label', 'ABAB')
           ]),
           h('.text', [
