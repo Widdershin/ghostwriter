@@ -165,7 +165,7 @@ function main ({DOM}) {
           h('.rhyme-schemes', [
             h('input', {type: 'radio', value: 'AABB', name:'rhyme-scheme', checked: rhymeScheme === 'AABB' ? true : false}),
             h('label', 'AABB'),
-            h('input', {type: 'radio', name:'rhyme-scheme', value: 'ABAB', checked: rhymeScheme === 'ABAB' ? true : false}),
+            h('input', {type: 'radio', value: 'ABAB', name:'rhyme-scheme', checked: rhymeScheme === 'ABAB' ? true : false}),
             h('label', 'ABAB')
           ]),
           h('.text', [
