@@ -157,15 +157,15 @@ function main ({DOM}) {
   return {
     DOM: state$.map(({text, notification, instructionsVisible, rhymeScheme}) => (
       h('.container', [
-        h('button.toggle-instructions', `${instructionsVisible ? 'HIDE' : 'SHOW'} INSTRUCTIONS`),
+        h('a.toggle-instructions', {href: "#"}, `${instructionsVisible ? 'HIDE' : 'SHOW'} INSTRUCTIONS`),
         h('.instructions', {innerHTML: INSTRUCTIONS, style: {display: instructionsVisible ? 'block' : 'none'}}),
         h('.app-inner', [
           h('button.rhyme', 'RHYME'),
           h('a', {href: 'https://www.wikiwand.com/en/Rhyme_scheme', target: '_blank'}, 'SELECT A RHYME SCHEME'),
           h('.rhyme-schemes', [
-            h('input', {type: 'radio', value: 'AABB', name:'rhyme-scheme', checked: true}),
+            h('input', {type: 'radio', value: 'AABB', name:'rhyme-scheme', checked: rhymeScheme === 'AABB' ? true : false}),
             h('label', 'AABB'),
-            h('input', {type: 'radio', name:'rhyme-scheme', value: 'ABAB'}),
+            h('input', {type: 'radio', value: 'ABAB', name:'rhyme-scheme', checked: rhymeScheme === 'ABAB' ? true : false}),
             h('label', 'ABAB')
           ]),
           h('.text', [
