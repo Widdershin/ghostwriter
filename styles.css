@@ -1,4 +1,5 @@
-html, body {
+body {
+  padding-bottom: 5em;
   color: #303029;
   font-family: 'Roboto', sans-serif;
   font-size: 0.9em;
