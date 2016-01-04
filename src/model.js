@@ -3,6 +3,7 @@ import _ from 'lodash';
 import rhyme from 'rhyme';
 
 import addRhyme from './actions/add-rhyme';
+import selectPreviousRhyme from './actions/select-previous-rhyme';
 import selectRhymeScheme from './actions/select-rhyme-scheme';
 import toggleInstructionVisibility from './actions/toggle-instruction-visibility';
 import updateText from './actions/update-text';
@@ -17,14 +18,15 @@ const initialState = {
   rhymeSuggestionsVisible: false
 };
 
-export default function model ({rhymePress$, caretPosition$, toggleInstructionVisibility$, textUpdate$, selectRhymeScheme$}) {
+export default function model ({rhymePress$, caretPosition$, toggleInstructionVisibility$, textUpdate$, selectRhymeScheme$, shiftTabPress$}) {
   const rhymingDictionary$ = Rx.Observable.fromCallback(rhyme)();
 
   const action$ = Rx.Observable.merge(
     rhymePress$.withLatestFrom(rhymingDictionary$, (ev, rhymingDictionary) => addRhyme(rhymingDictionary)),
     textUpdate$.map(event => updateText(event.target.value)),
     toggleInstructionVisibility$.map(_ => toggleInstructionVisibility),
-    selectRhymeScheme$.map(event => selectRhymeScheme(event.target.value))
+    selectRhymeScheme$.map(event => selectRhymeScheme(event.target.value)),
+    shiftTabPress$.map(_ => selectPreviousRhyme)
   );
 
   const state$ = action$

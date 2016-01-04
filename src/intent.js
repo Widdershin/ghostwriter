@@ -3,20 +3,29 @@ import {Rx} from '@cycle/core';
 import caretPosition from 'textarea-caret-position';
 
 export default function intent ({DOM}) {
+  const keyPress$ = DOM
+    .select('.container')
+    .events('keydown');
+
   return {
-    rhymePress$: rhymePress$(DOM),
+    rhymePress$: rhymePress$(DOM, keyPress$),
     caretPosition$: caretPosition$(DOM),
     toggleInstructionVisibility$: toggleInstructionVisibility$(DOM),
     textUpdate$: textUpdate$(DOM),
-    selectRhymeScheme$: selectRhymeScheme$(DOM)
+    selectRhymeScheme$: selectRhymeScheme$(DOM),
+    shiftTabPress$: shiftTabPress$(DOM, keyPress$)
   }
 }
 
-function rhymePress$ (DOM) {
-  const tabPress$ = DOM
-    .select('.container')
-    .events('keydown')
-    .filter(keyPressed('Tab', 9));
+function shiftTabPress$ (DOM, keyPress$) {
+  return keyPress$
+    .filter(ev => ev.shiftKey && keyPressed('Tab', 9)(ev))
+    .do(ev => ev.preventDefault());
+}
+
+function rhymePress$ (DOM, keyPress$) {
+  const tabPress$ = keyPress$
+    .filter(ev => !ev.shiftKey && keyPressed('Tab', 9)(ev));
 
   const rhymeButtonClick$ = DOM
     .select('.rhyme')
