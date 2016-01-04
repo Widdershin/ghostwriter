@@ -28,7 +28,7 @@
     "express": "^4.13.3",
     "lodash": "^3.10.1",
     "rhyme": "widdershin/node-rhyme",
-    "textarea-caret-position": "github:component/textarea-caret-position"
+    "textarea-caret-position": "component/textarea-caret-position"
   },
   "devDependencies": {
     "browserify": "^11.2.0",
