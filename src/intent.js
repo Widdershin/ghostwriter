@@ -1,6 +1,6 @@
 import {Rx} from '@cycle/core';
 
-import caretPosition from 'textarea-caret-position';
+import caretPosition from 'textarea-caret';
 
 export default function intent ({DOM}) {
   const keyPress$ = DOM
