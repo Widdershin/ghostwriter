@@ -14,36 +14,57 @@ Impress all your friends with your linguistic skill<br />
 And do it again, now you know the drill.<br /><br />
 `;
 
-
-function renderApp({text, notification, instructionsVisible, rhymeScheme, availableRhymes, rhymeSuggestionsVisible, selectedRhymeIndex, caretPosition}) {
+function renderApp(state) {
   return (
     h('.container', [
-      h('a.toggle-instructions', {href: "#"}, `${instructionsVisible ? 'HIDE' : 'SHOW'} INSTRUCTIONS`),
-      h('.instructions', {innerHTML: INSTRUCTIONS, style: {display: instructionsVisible ? 'block' : 'none'}}),
+      renderInstructions(state.instructionsVisible),
       h('.app-inner', [
         h('button.rhyme', 'RHYME'),
-        h('a', {href: 'https://www.wikiwand.com/en/Rhyme_scheme', target: '_blank'}, 'SELECT A RHYME SCHEME'),
-        h('.rhyme-schemes', [
-          h('input', {type: 'radio', value: 'AABB', name:'rhyme-scheme', checked: rhymeScheme === 'AABB' ? true : false}),
-          h('label', 'AABB'),
-          h('input', {type: 'radio', value: 'ABAB', name:'rhyme-scheme', checked: rhymeScheme === 'ABAB' ? true : false}),
-          h('label', 'ABAB')
-        ]),
+        renderRhymeSchemeSelector(state.rhymeScheme),
         h('.text', [
-          renderRhymeSuggestions(availableRhymes, rhymeSuggestionsVisible, selectedRhymeIndex, caretPosition),
-          h('.notification', notification),
-          h('textarea', {rows: 18, value: text})
+          renderRhymeSuggestions(state),
+          h('.notification', state.notification),
+          h('textarea', {rows: 18, value: state.text})
         ])
       ])
     ])
   )
 }
 
-function renderRhymeSuggestions (rhymes, visible, selectedRhymeIndex, caretPosition) {
+function renderInstructions(instructionsVisible) {
+  return (
+    h('div', [
+      h('a.toggle-instructions', {href: "#"}, `${instructionsVisible ? 'HIDE' : 'SHOW'} INSTRUCTIONS`),
+      h('.instructions', {innerHTML: INSTRUCTIONS, style: {display: instructionsVisible ? 'block' : 'none'}})
+    ])
+  );
+}
+
+function renderRhymeSchemeSelector (rhymeScheme) {
+  return (
+    h('div', [
+      h('a', {href: 'https://www.wikiwand.com/en/Rhyme_scheme', target: '_blank'}, 'SELECT A RHYME SCHEME'),
+      h('.rhyme-schemes', [
+        h('input', {type: 'radio', value: 'AABB', name:'rhyme-scheme', checked: rhymeScheme === 'AABB' ? true : false}),
+        h('label', 'AABB'),
+        h('input', {type: 'radio', value: 'ABAB', name:'rhyme-scheme', checked: rhymeScheme === 'ABAB' ? true : false}),
+        h('label', 'ABAB')
+      ])
+    ])
+  );
+}
+
+function renderRhymeSuggestions ({availableRhymes, rhymeSuggestionsVisible, selectedRhymeIndex, caretPosition}) {
   return (
     h('.rhyme-suggestions',
-      {style: {display: visible ? 'block' : 'none', top: `${caretPosition.top + 55}px`, left: `${caretPosition.left + 15}px`}},
-      rhymes.map((rhyme, index) => renderRhymeSuggestion(rhyme, index === selectedRhymeIndex, index))
+      {
+        style: {
+          display: rhymeSuggestionsVisible ? 'block' : 'none',
+          top: `${caretPosition.top + 55}px`, left: `${caretPosition.left + 15}px`
+        }
+      },
+
+      availableRhymes.map((rhyme, index) => renderRhymeSuggestion(rhyme, index === selectedRhymeIndex, index))
     )
   )
 }
