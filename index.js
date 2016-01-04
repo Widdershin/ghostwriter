@@ -1,9 +1,9 @@
 import {run, Rx} from '@cycle/core';
 import {makeDOMDriver} from '@cycle/dom';
 
-import view from './view';
-import intent from './intent';
-import model from './model';
+import view from './src/view';
+import intent from './src/intent';
+import model from './src/model';
 
 Rx.config.longStackSupport = true;
 
