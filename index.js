@@ -4,6 +4,7 @@ import CycleTimeTravel from 'cycle-time-travel';
 import $ from 'jquery';
 import _ from 'lodash';
 import rhyme from 'rhyme';
+import caretPosition from 'textarea-caret-position';
 
 const INSTRUCTIONS = `
 Write your sick raps in the text box below.<br />
@@ -48,19 +49,32 @@ function appendNextRhyme (wordToRhyme, state, madeRhyme) {
 function addRhyme (rhymingDictionary) {
   return state => {
     const wordToRhyme = findWordToRhyme(state);
-    const availableRhymes = rhymingDictionary.rhyme(wordToRhyme);
-    const madeRhyme = _.shuffle(availableRhymes).slice(0, 1)[0];
+    let availableRhymes = state.availableRhymes;
+    let selectedRhymeIndex = state.selectedRhymeIndex;
+
+    if (wordToRhyme !== state.lastWord) {
+      selectedRhymeIndex = 0;
+
+      availableRhymes = rhymingDictionary.rhyme(wordToRhyme);
+    } else {
+      selectedRhymeIndex = (selectedRhymeIndex + 1) % availableRhymes.length;
+    }
 
     if (_.isEmpty(availableRhymes)) {
-      return Object.assign({}, state, {notification: 'No Rhymes'});
+      return Object.assign({}, state, {notification: 'No Rhymes', rhymeSuggestionsVisible: false});
     }
+
+    const madeRhyme = availableRhymes[selectedRhymeIndex];
 
     const text = appendNextRhyme(wordToRhyme, state, madeRhyme);
 
     const stateUpdates = {
       text,
       notification: '',
-      lastWord: wordToRhyme
+      lastWord: wordToRhyme,
+      availableRhymes,
+      selectedRhymeIndex,
+      rhymeSuggestionsVisible: true
     };
 
     return Object.assign({}, state, stateUpdates);
@@ -96,7 +110,7 @@ function lastWord (text, lineOffset) {
 }
 
 function updateText (textEnteredByUser) {
-  return state => Object.assign({}, state, {text: textEnteredByUser, notification: ''});
+  return state => Object.assign({}, state, {text: textEnteredByUser, notification: '', rhymeSuggestionsVisible: false});
 }
 
 function toggleInstructionVisibility (state) {
@@ -105,6 +119,19 @@ function toggleInstructionVisibility (state) {
     state,
     {instructionsVisible: !state.instructionsVisible}
   );
+}
+
+function renderRhymeSuggestions (rhymes, visible, selectedRhymeIndex, caretPosition) {
+  return (
+    h('.rhyme-suggestions',
+      {style: {display: visible ? 'block' : 'none', top: `${caretPosition.top + 55}px`, left: `${caretPosition.left + 15}px`}},
+      rhymes.map((rhyme, index) => renderRhymeSuggestion(rhyme, index === selectedRhymeIndex, index))
+    )
+  )
+}
+
+function renderRhymeSuggestion (rhyme, isSelected, key) {
+ return h(`.rhyme-suggestion ${isSelected ? '.active' : ''}`, {key}, rhyme)
 }
 
 function main ({DOM}) {
@@ -141,11 +168,20 @@ function main ({DOM}) {
     selectRhymeScheme$
   );
 
+  const caretPosition$ = DOM
+    .select('.text')
+    .events('input')
+    .map(event => caretPosition(event.target, event.target.selectionEnd))
+    .startWith({top: 0, left: 0});
+
   const initialState = {
     text: '',
     notification: '',
     instructionsVisible: true,
-    rhymeScheme: 'AABB'
+    rhymeScheme: 'AABB',
+    availableRhymes: [],
+    selectedRhymeIndex: 0,
+    rhymeSuggestionsVisible: false
   };
 
   const state$ = action$.scan((state, action) => action(state), initialState)
@@ -155,7 +191,7 @@ function main ({DOM}) {
     });
 
   return {
-    DOM: state$.map(({text, notification, instructionsVisible, rhymeScheme}) => (
+    DOM: state$.withLatestFrom(caretPosition$, ({text, notification, instructionsVisible, rhymeScheme, availableRhymes, rhymeSuggestionsVisible, selectedRhymeIndex}, caretPosition) => (
       h('.container', [
         h('a.toggle-instructions', {href: "#"}, `${instructionsVisible ? 'HIDE' : 'SHOW'} INSTRUCTIONS`),
         h('.instructions', {innerHTML: INSTRUCTIONS, style: {display: instructionsVisible ? 'block' : 'none'}}),
@@ -169,6 +205,7 @@ function main ({DOM}) {
             h('label', 'ABAB')
           ]),
           h('.text', [
+            renderRhymeSuggestions(availableRhymes, rhymeSuggestionsVisible, selectedRhymeIndex, caretPosition),
             h('.notification', notification),
             h('textarea', {rows: 18, value: text})
           ])

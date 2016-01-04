@@ -59,6 +59,7 @@ input[type="radio"]{
   width: 100%;
   color: #E1E1E1;
   background: #1D1D1D;
+  position: relative;
 }
 
 .text textarea {
@@ -98,6 +99,14 @@ input[type="radio"]{
 .rhyme:active {
   background: black;
   color: yellow;
+}
+
+.rhyme-suggestions {
+  position: absolute;
+}
+
+.rhyme-suggestion.active {
+  color: red;
 }
 
 /* Tablet Styles */
