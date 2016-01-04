@@ -26,7 +26,6 @@
     "brfs": "^1.4.1",
     "cycle-time-travel": "^0.1.2",
     "express": "^4.13.3",
-    "jquery": "^2.1.4",
     "lodash": "^3.10.1",
     "rhyme": "widdershin/node-rhyme",
     "textarea-caret-position": "github:component/textarea-caret-position"

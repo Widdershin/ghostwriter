@@ -1,9 +1,5 @@
 import {run, Rx} from '@cycle/core';
 import {makeDOMDriver} from '@cycle/dom';
-import CycleTimeTravel from 'cycle-time-travel';
-import $ from 'jquery';
-import _ from 'lodash';
-import rhyme from 'rhyme';
 
 import view from './view';
 import intent from './intent';
@@ -21,4 +17,4 @@ const drivers = {
   DOM: makeDOMDriver('.app')
 };
 
-$(() => run(main, drivers));
+run(main, drivers)
