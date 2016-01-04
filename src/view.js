@@ -64,7 +64,9 @@ function renderRhymeSuggestions ({availableRhymes, rhymeSuggestionsVisible, sele
         }
       },
 
-      availableRhymes.map((rhyme, index) => renderRhymeSuggestion(rhyme, index === selectedRhymeIndex, index))
+      availableRhymes
+        .slice(selectedRhymeIndex, 10 + selectedRhymeIndex)
+        .map((rhyme, index) => renderRhymeSuggestion(rhyme, index + selectedRhymeIndex === selectedRhymeIndex, index))
     )
   )
 }
