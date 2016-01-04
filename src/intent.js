@@ -2,45 +2,60 @@ import {Rx} from '@cycle/core';
 
 import caretPosition from 'textarea-caret-position';
 
-function keyPressed (key, number) {
-  return ev => {
-    return ev.key === key || ev.keyIdentifier === key || ev.keyCode === number;
-  };
+export default function intent ({DOM}) {
+  return {
+    rhymePress$: rhymePress$(DOM),
+    caretPosition$: caretPosition$(DOM),
+    toggleInstructionVisibility$: toggleInstructionVisibility$(DOM),
+    textUpdate$: textUpdate$(DOM),
+    selectRhymeScheme$: selectRhymeScheme$(DOM)
+  }
 }
 
-export default function intent ({DOM}) {
-  const toggleInstructionVisibility$ = DOM
-    .select('.toggle-instructions')
-    .events('click')
+function rhymePress$ (DOM) {
+  const tabPress$ = DOM
+    .select('.container')
+    .events('keydown')
+    .filter(keyPressed('Tab', 9));
 
-  const textUpdate$ = DOM.select('.text').events('input')
+  const rhymeButtonClick$ = DOM
+    .select('.rhyme')
+    .events('click');
 
-  const selectRhymeScheme$ = DOM
-    .select('.rhyme-schemes input')
-    .events('change')
-
-  const keyPress$ = DOM.select('.container').events('keydown');
-
-  const tabPress$ = keyPress$.filter(keyPressed('Tab', 9));
-
-  const rhymePress$ = Rx.Observable.merge(
+  return Rx.Observable.merge(
     tabPress$,
-    DOM.select('.rhyme').events('click')
-  );
+    rhymeButtonClick$
+  ).do(ev => ev.preventDefault());
+}
 
-  rhymePress$.forEach(ev => ev.preventDefault());
-
-  const caretPosition$ = DOM
+function caretPosition$ (DOM) {
+  return DOM
     .select('.text')
     .events('input')
     .map(event => caretPosition(event.target, event.target.selectionEnd))
     .startWith({top: 0, left: 0});
+}
 
-  return {
-    rhymePress$,
-    caretPosition$,
-    toggleInstructionVisibility$,
-    textUpdate$,
-    selectRhymeScheme$
-  }
+function toggleInstructionVisibility$ (DOM) {
+  return DOM
+    .select('.toggle-instructions')
+    .events('click');
+}
+
+function selectRhymeScheme$ (DOM) {
+  return DOM
+    .select('.rhyme-schemes input')
+    .events('change');
+}
+
+function textUpdate$ (DOM) {
+  return DOM
+    .select('.text')
+    .events('input');
+}
+
+function keyPressed (key, number) {
+  return ev => {
+    return ev.key === key || ev.keyIdentifier === key || ev.keyCode === number;
+  };
 }
