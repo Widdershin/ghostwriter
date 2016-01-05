@@ -28,7 +28,7 @@ export default function model ({rhymePress$, caretPosition$, toggleInstructionVi
     toggleInstructionVisibility$.map(_ => toggleInstructionVisibility),
     selectRhymeScheme$.map(event => selectRhymeScheme(event.target.value)),
     shiftTabPress$.map(_ => selectPreviousRhyme),
-    rhymeSuggestionClick$.map(event => chooseSuggestion(event.target.innerText))
+    rhymeSuggestionClick$.map(event => chooseSuggestion(event.target.innerHTML))
   );
 
   const state$ = action$
