@@ -90,23 +90,33 @@ input[type="radio"]{
   transition: color 0.5s;
 }
 
-.rhyme:hover {
+.rhyme:hover, .rhyme:focus {
   border: none;
   background: #FFF7A4;
   color: #1D1D1D;
+  outline: none;
 }
 
 .rhyme:active {
   background: black;
-  color: yellow;
+  color: #FFF7A4;
+  outline: none;
 }
 
 .rhyme-suggestions {
   position: absolute;
+  padding: 0px 0px;
+  margin: -16px;
+  text-align: left;
+}
+
+
+.rhyme-suggestion:hover {
+  cursor: pointer;
 }
 
 .rhyme-suggestion.active {
-  color: red;
+  color: #FFF7A4;
 }
 
 /* Tablet Styles */
@@ -120,6 +130,11 @@ input[type="radio"]{
 @media screen and (min-width: 1200px) {
   h1 {
     font-size: 2.5em;
+  }
+
+  .rhyme-suggestions {
+    padding: 5px 15px;
+    margin: 0;
   }
 
   .instructions {
