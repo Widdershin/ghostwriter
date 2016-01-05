@@ -7,6 +7,7 @@ import selectPreviousRhyme from './actions/select-previous-rhyme';
 import selectRhymeScheme from './actions/select-rhyme-scheme';
 import toggleInstructionVisibility from './actions/toggle-instruction-visibility';
 import updateText from './actions/update-text';
+import chooseSuggestion from './actions/choose-suggestion';
 
 const initialState = {
   text: '',
@@ -18,7 +19,7 @@ const initialState = {
   rhymeSuggestionsVisible: false
 };
 
-export default function model ({rhymePress$, caretPosition$, toggleInstructionVisibility$, textUpdate$, selectRhymeScheme$, shiftTabPress$}) {
+export default function model ({rhymePress$, caretPosition$, toggleInstructionVisibility$, textUpdate$, selectRhymeScheme$, shiftTabPress$, rhymeSuggestionClick$}) {
   const rhymingDictionary$ = Rx.Observable.fromCallback(rhyme)();
 
   const action$ = Rx.Observable.merge(
@@ -26,7 +27,8 @@ export default function model ({rhymePress$, caretPosition$, toggleInstructionVi
     textUpdate$.map(event => updateText(event.target.value)),
     toggleInstructionVisibility$.map(_ => toggleInstructionVisibility),
     selectRhymeScheme$.map(event => selectRhymeScheme(event.target.value)),
-    shiftTabPress$.map(_ => selectPreviousRhyme)
+    shiftTabPress$.map(_ => selectPreviousRhyme),
+    rhymeSuggestionClick$.map(event => chooseSuggestion(event.target.innerText))
   );
 
   const state$ = action$

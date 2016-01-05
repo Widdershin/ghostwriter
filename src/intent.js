@@ -13,7 +13,8 @@ export default function intent ({DOM}) {
     toggleInstructionVisibility$: toggleInstructionVisibility$(DOM),
     textUpdate$: textUpdate$(DOM),
     selectRhymeScheme$: selectRhymeScheme$(DOM),
-    shiftTabPress$: shiftTabPress$(DOM, keyPress$)
+    shiftTabPress$: shiftTabPress$(DOM, keyPress$),
+    rhymeSuggestionClick$: rhymeSuggestionClick$(DOM)
   }
 }
 
@@ -35,6 +36,12 @@ function rhymePress$ (DOM, keyPress$) {
     tabPress$,
     rhymeButtonClick$
   ).do(ev => ev.preventDefault());
+}
+
+function rhymeSuggestionClick$ (DOM) {
+  return DOM
+    .select('.rhyme-suggestions')
+    .events('click');
 }
 
 function caretPosition$ (DOM) {
