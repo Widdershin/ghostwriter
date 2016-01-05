@@ -40,7 +40,7 @@ function rhymePress$ (DOM, keyPress$) {
 
 function rhymeSuggestionClick$ (DOM) {
   return DOM
-    .select('.rhyme-suggestions')
+    .select('.rhyme-suggestion')
     .events('click');
 }
 
