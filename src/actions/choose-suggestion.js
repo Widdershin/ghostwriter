@@ -15,9 +15,8 @@ export default function chooseSuggestion (event) {
 
     return Object.assign({}, state, stateUpdates)
   }
-
 }
 
-function chooseRhymeAtIndex (availableRhymes, clickedRhyme) {
-  return _.indexOf(availableRhymes, clickedRhyme)
+function chooseRhymeAtIndex (availableRhymes, rhyme) {
+  return _.indexOf(availableRhymes, rhyme);
 }
